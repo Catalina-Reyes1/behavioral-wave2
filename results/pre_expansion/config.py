@@ -1,0 +1,6 @@
+ASSET = "TSLA"
+MARKET = "VOO"
+START_DATE = "2019-01-01"
+END_DATE = None
+TRAIN_RATIO = 0.70
+TRANSACTION_COST = 0.001  # 0.10% por operación, provisional

@@ -1,0 +1,20 @@
+{
+  "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Tesla%2C_Inc./daily/2017020200/2026090800",
+  "project": "en.wikipedia",
+  "article": "Tesla,_Inc.",
+  "access": "all-access",
+  "agent": "user",
+  "granularity": "daily",
+  "timezone": "UTC",
+  "retrieved_at": "2026-09-09T22:21:20.875411+00:00",
+  "requested_start": "2017-02-02",
+  "requested_end": "2026-09-08",
+  "first_available": "2017-02-02",
+  "last_available": "2026-09-08",
+  "missing_dates": [],
+  "baseline_days": 60,
+  "baseline_shift": 1,
+  "std_ddof": 1,
+  "zero_sigma": "NaN; no se define un z-score con referencia constante",
+  "ioc_meaning": "Intensidad de atención anormal positiva; no sentimiento ni dirección"
+}
