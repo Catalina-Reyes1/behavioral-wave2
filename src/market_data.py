@@ -26,10 +26,10 @@ def download_market_data(asset: str, market: str, start: str | None = None, end=
         prices = raw[[price_field]].copy()
         prices.columns = tickers[:1]
 
-    prices = prices.rename(columns={asset: "TSLA_Price", market: "VOO_Price"})
+    prices = prices.rename(columns={asset: "NVDA_Price", market: "VOO_Price"})
     prices = prices.dropna(how="all")
 
-    prices["TSLA_Return"] = prices["TSLA_Price"].pct_change()
+    prices["NVDA_Return"] = prices["NVDA_Price"].pct_change()
     prices["VOO_Return"] = prices["VOO_Price"].pct_change()
 
     return prices

@@ -34,7 +34,7 @@ def build_web_data(root: Path = ROOT) -> dict:
     capm = _read(root, "data/processed/capm_model.csv")
     events = _read(root, "data/processed/backtest_events.csv")
     summary = pd.read_csv(root / "results/backtest_summary.csv", index_col="Sample")
-    attention_meta = json.loads((root / "data/raw/tsla_wikipedia_pageviews.metadata.json").read_text(encoding="utf-8"))
+    attention_meta = json.loads((root / "data/raw/nvda_wikipedia_pageviews.metadata.json").read_text(encoding="utf-8"))
     for name, frame in [("señales", signals), ("CAPM", capm)]:
         if not market.index.equals(frame.index) or not market.Sample.equals(frame.Sample):
             raise ValueError(f"La versión de {name} no coincide con el calendario del mercado.")
@@ -79,13 +79,13 @@ def build_web_data(root: Path = ROOT) -> dict:
     if horizons != {5}:
         raise ValueError("El horizonte guardado no es de cinco sesiones.")
     signal_events = signals.loc[signals.Signal.ne(0), ["Sample", "IOC", "CAR_Z", "Signal", "Trade_Signal"]].copy()
-    signal_events["TSLA_Price"] = market.loc[signal_events.index, "TSLA_Price"]
+    signal_events["NVDA_Price"] = market.loc[signal_events.index, "NVDA_Price"]
     next_session = pd.Series(market.index, index=market.index).shift(-1)
     signal_events["Entry_Date"] = next_session.reindex(signal_events.index).dt.strftime("%Y-%m-%d")
     signal_events["Entry_Trade_Signal"] = signals.Trade_Signal.shift(-1).reindex(signal_events.index)
     if not np.allclose(signal_events.Entry_Trade_Signal.dropna(), signal_events.loc[signal_events.Entry_Trade_Signal.notna(), "Signal"]):
         raise ValueError("Los eventos no corresponden a Trade_Signal en la siguiente sesión.")
-    timeline = market[["TSLA_Price", "Sample"]].join(signals[["IOC", "Signal"]])
+    timeline = market[["NVDA_Price", "Sample"]].join(signals[["IOC", "Signal"]])
     latest_ioc = attention.IOC.dropna()
     overview = {
         "period": {"start": str(market.index.min().date()), "end": str(market.index.max().date()),
@@ -116,7 +116,7 @@ def build_web_data(root: Path = ROOT) -> dict:
     }
     paths = ["data/processed/market_model.csv", "data/processed/attention_wave.csv", "data/processed/behavioral_signals.csv",
              "data/processed/capm_model.csv", "data/processed/backtest_events.csv", "results/backtest_summary.csv",
-             "data/raw/tsla_wikipedia_pageviews.metadata.json", "src/backtest.py"]
+             "data/raw/nvda_wikipedia_pageviews.metadata.json", "src/backtest.py"]
     paths.extend(["results/pre_expansion/data/processed/market_model.csv",
                   "results/pre_expansion/data/processed/behavioral_signals.csv",
                   "results/pre_expansion/results/backtest_summary.csv"])

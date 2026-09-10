@@ -53,7 +53,7 @@ class WebExportTests(unittest.TestCase):
         self.assertEqual([row["Date"] for row in self.data["events"]["signals"]], expected.Date.tolist())
         self.assertEqual([row["Signal"] for row in self.data["events"]["signals"]], expected.Signal.tolist())
         market = pd.read_csv(ROOT / "data/processed/market_model.csv")
-        np.testing.assert_allclose([row["TSLA_Price"] for row in self.data["series"]["market"]], market.TSLA_Price)
+        np.testing.assert_allclose([row["NVDA_Price"] for row in self.data["series"]["market"]], market.NVDA_Price)
         attention = pd.read_csv(ROOT / "data/processed/attention_wave.csv")
         self.assertEqual(len(self.data["series"]["attention"]), len(attention))
         self.assertIsNone(self.data["series"]["attention"][0]["IOC"])

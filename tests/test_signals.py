@@ -12,7 +12,7 @@ def sample():
     dates = pd.bdate_range("2019-01-01", periods=15, name="Date")
     market = pd.DataFrame({
         "Sample": ["Train"] * 10 + ["Test"] * 5,
-        "TSLA_Return": .01, "VOO_Return": .005, "AR": .004, "CAR_5": .02,
+        "NVDA_Return": .01, "VOO_Return": .005, "AR": .004, "CAR_5": .02,
         "CAR_Z": list(np.arange(10) - 5) + [10, 0, -10, np.nan, 10],
     }, index=dates)
     attention = pd.DataFrame({

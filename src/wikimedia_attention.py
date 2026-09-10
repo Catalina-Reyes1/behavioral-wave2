@@ -1,4 +1,4 @@
-"""Atención pública a Tesla: Wikimedia Pageviews e IOC v1 de intensidad."""
+"""Atención pública a NVIDIA: Wikimedia Pageviews e IOC v1 de intensidad."""
 
 import json
 import time
@@ -14,8 +14,8 @@ from config import ATTENTION_START_DATE
 
 API_URL = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article"
 PROJECT = "en.wikipedia"
-ARTICLE = "Tesla,_Inc."
-USER_AGENT = "BehavioralWave/1.0 (university behavioral finance research; Tesla public attention)"
+ARTICLE = "Nvidia"
+USER_AGENT = "BehavioralWave/1.0 (university behavioral finance research; NVIDIA public attention)"
 
 
 class WikimediaError(RuntimeError):
@@ -139,7 +139,7 @@ def calculate_attention_wave(pageviews: pd.DataFrame) -> pd.DataFrame:
 def run_wikimedia_attention(start=None, end=None, *, raw=None) -> pd.DataFrame:
     raw = download_wikimedia_pageviews(start, end) if raw is None else raw
     wave = calculate_attention_wave(raw)
-    raw_path = Path("data/raw/tsla_wikipedia_pageviews.csv")
+    raw_path = Path("data/raw/nvda_wikipedia_pageviews.csv")
     processed_path = Path("data/processed/attention_wave.csv")
     for frame, path in ((raw, raw_path), (wave, processed_path)):
         path.parent.mkdir(parents=True, exist_ok=True)

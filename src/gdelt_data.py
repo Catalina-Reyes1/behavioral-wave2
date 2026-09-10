@@ -1,4 +1,4 @@
-"""Series diarias de Tesla mediante GDELT DOC 2.0, sin IOC ni señales."""
+"""Series diarias de NVIDIA mediante GDELT DOC 2.0, sin IOC ni señales."""
 
 import hashlib
 import json
@@ -12,7 +12,7 @@ import requests
 
 
 API_URL = "https://api.gdeltproject.org/api/v2/doc/doc"
-QUERY = "Tesla"
+QUERY = "NVIDIA"
 MODES = {"TimelineVolRaw": "News_Count", "TimelineTone": "News_Tone"}
 
 
@@ -147,7 +147,7 @@ def _combine(volume: pd.Series, tone: pd.Series, start, end) -> pd.DataFrame:
     return frame
 
 
-def download_gdelt_data(start="2019-01-01", end=None, output_path="data/raw/tsla_gdelt.csv") -> pd.DataFrame:
+def download_gdelt_data(start="2019-01-01", end=None, output_path="data/raw/nvda_gdelt.csv") -> pd.DataFrame:
     """Descarga dias UTC cerrados y guarda CSV, respuestas y metadatos de cobertura.
 
     end es inclusivo. El dia actual se excluye por estar incompleto. No se

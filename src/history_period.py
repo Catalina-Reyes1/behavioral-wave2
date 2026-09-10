@@ -19,7 +19,7 @@ def determine_common_period(market: pd.DataFrame, attention: pd.DataFrame) -> di
     """Primera sesión con retornos disponibles e IOC calculable con 60 días pasados."""
     market = market.sort_index()
     attention = attention.sort_index()
-    valid_market = market.loc[np.isfinite(market[["TSLA_Price", "VOO_Price", "TSLA_Return", "VOO_Return"]]).all(axis=1)]
+    valid_market = market.loc[np.isfinite(market[["NVDA_Price", "VOO_Price", "NVDA_Return", "VOO_Return"]]).all(axis=1)]
     observed = attention.Pageviews.dropna()
     if valid_market.empty or observed.empty:
         raise ValueError("No hay historia común de precios, retornos y Pageviews.")
@@ -32,11 +32,11 @@ def determine_common_period(market: pd.DataFrame, attention: pd.DataFrame) -> di
     first = eligible.min()
     # Límite final por datos observados, no por si generan señales o buenos resultados.
     last = valid_market.index.intersection(observed.index).max()
-    previous_prices = market.loc[(market.index < first) & market[["TSLA_Price", "VOO_Price"]].notna().all(axis=1)]
+    previous_prices = market.loc[(market.index < first) & market[["NVDA_Price", "VOO_Price"]].notna().all(axis=1)]
     if previous_prices.empty:
         raise ValueError("Falta el cierre anterior necesario para el primer retorno efectivo.")
     return {
-        "tsla_first_price": str(market.TSLA_Price.first_valid_index().date()),
+        "nvda_first_price": str(market.NVDA_Price.first_valid_index().date()),
         "voo_first_price": str(market.VOO_Price.first_valid_index().date()),
         "first_common_return": str(valid_market.index.min().date()),
         "attention_first_observation": str(observed.index.min().date()),
@@ -45,13 +45,13 @@ def determine_common_period(market: pd.DataFrame, attention: pd.DataFrame) -> di
         "analysis_start": str(first.date()), "analysis_end": str(last.date()),
         "market_download_start": str(previous_prices.index.max().date()),
         "attention_warmup_days": int((first - observed.index.min()).days),
-        "selection_basis": "Primera sesión con retornos de TSLA/VOO e IOC válido; ninguna métrica de backtest interviene.",
+        "selection_basis": "Primera sesión con retornos de NVDA/VOO e IOC válido; ninguna métrica de backtest interviene.",
     }
 
 
 def discover_history_period() -> dict:
     market = download_market_data(ASSET, MARKET, start=None, end=END_DATE)
-    first_common_price = market.dropna(subset=["TSLA_Price", "VOO_Price"]).index.min()
+    first_common_price = market.dropna(subset=["NVDA_Price", "VOO_Price"]).index.min()
     attention = download_wikimedia_pageviews(str(first_common_price.date()), END_DATE)
     period = determine_common_period(market, attention)
     # Guardar la respuesta de descubrimiento, sin reemplazar todavía el pipeline.

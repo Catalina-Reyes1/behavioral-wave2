@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-MARKET_COLUMNS = ["Sample", "TSLA_Return", "VOO_Return", "AR", "CAR_5", "CAR_Z"]
+MARKET_COLUMNS = ["Sample", "NVDA_Return", "VOO_Return", "AR", "CAR_5", "CAR_Z"]
 ATTENTION_COLUMNS = ["Pageviews", "Attention_Z", "IOC", "IOC_Velocity"]
 
 

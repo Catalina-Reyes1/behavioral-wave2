@@ -29,7 +29,7 @@ def download_irx(start, end) -> pd.DataFrame:
 
 
 def calculate_capm(market: pd.DataFrame, irx: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
-    for name, frame, columns in [("Mercado", market, ["Sample", "TSLA_Return", "VOO_Return"]),
+    for name, frame, columns in [("Mercado", market, ["Sample", "NVDA_Return", "VOO_Return"]),
                                   ("IRX", irx, ["IRX_Annual_Percent"])]:
         if frame.empty or not set(columns).issubset(frame.columns):
             raise ValueError(f"{name}: faltan datos o columnas requeridas.")
@@ -45,31 +45,31 @@ def calculate_capm(market: pd.DataFrame, irx: pd.DataFrame) -> tuple[pd.DataFram
     rates = irx["IRX_Annual_Percent"].sort_index()
     if not np.isfinite(rates.dropna()).all():
         raise ValueError("^IRX contiene tasas no finitas.")
-    # Unión antes del ffill: incluye tasas anteriores incluso en fechas sin TSLA.
+    # Unión antes del ffill: incluye tasas anteriores incluso en fechas sin NVDA.
     calendar = rates.index.union(result.index).sort_values()
     filled = rates.reindex(calendar).ffill()
     result["IRX_Annual_Percent"] = filled.reindex(result.index)
     observed_on = pd.Series(rates.index, index=rates.index).where(rates.notna())
     result["RF_Observation_Date"] = observed_on.reindex(calendar).ffill().reindex(result.index)
     result["RF_Daily"] = result["IRX_Annual_Percent"] / 100 / 252
-    result["TSLA_Excess"] = result["TSLA_Return"] - result["RF_Daily"]
+    result["NVDA_Excess"] = result["NVDA_Return"] - result["RF_Daily"]
     result["Market_Excess"] = result["VOO_Return"] - result["RF_Daily"]
-    train = result.loc[result["Sample"].eq("Train"), ["TSLA_Excess", "Market_Excess"]].dropna()
+    train = result.loc[result["Sample"].eq("Train"), ["NVDA_Excess", "Market_Excess"]].dropna()
     if len(train) < 3 or not np.isfinite(train.to_numpy()).all():
         raise ValueError("CAPM requiere al menos tres observaciones Train válidas.")
     x = np.column_stack([np.ones(len(train)), train["Market_Excess"].to_numpy()])
-    y = train["TSLA_Excess"].to_numpy()
+    y = train["NVDA_Excess"].to_numpy()
     if np.linalg.matrix_rank(x) != 2:
         raise ValueError("Market_Excess no tiene variación suficiente en Train.")
     alpha, beta = np.linalg.lstsq(x, y, rcond=None)[0]
     sigma = float(np.std(y - x @ np.array([alpha, beta]), ddof=1))
     result["CAPM_Expected_Return"] = result["RF_Daily"] + alpha + beta * result["Market_Excess"]
-    result["CAPM_AR"] = result["TSLA_Return"] - result["CAPM_Expected_Return"]
+    result["CAPM_AR"] = result["NVDA_Return"] - result["CAPM_Expected_Return"]
     result["Alpha_CAPM"] = alpha
     result["Beta_CAPM"] = beta
     summary = {"Alpha_CAPM": float(alpha), "Beta_CAPM": float(beta), "Sigma_Epsilon_CAPM": sigma,
                "Train_Observations": len(train),
-               "Test_Observations": int(result.loc[result.Sample.eq("Test"), ["TSLA_Excess", "Market_Excess"]].notna().all(axis=1).sum()),
+               "Test_Observations": int(result.loc[result.Sample.eq("Test"), ["NVDA_Excess", "Market_Excess"]].notna().all(axis=1).sum()),
                "Missing_RF_Observations": int(result["RF_Daily"].isna().sum())}
     return result, summary
 

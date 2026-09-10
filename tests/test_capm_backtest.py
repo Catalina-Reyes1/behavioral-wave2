@@ -13,7 +13,7 @@ def market_sample():
     market_return = np.array([.01, -.02, .03, .01, -.01] * 4)
     asset_return = .001 + 1.3 * market_return + np.sin(np.arange(20)) * .003
     market = pd.DataFrame({"Sample": ["Train"] * 10 + ["Test"] * 10,
-                           "TSLA_Return": asset_return, "VOO_Return": market_return,
+                           "NVDA_Return": asset_return, "VOO_Return": market_return,
                            "Expected_Return": .001 + 1.3 * market_return}, index=dates)
     irx = pd.DataFrame({"IRX_Annual_Percent": np.linspace(2, 4, 20)}, index=dates)
     return market, irx
@@ -22,8 +22,8 @@ def market_sample():
 def event_sample():
     market, irx = market_sample()
     capm, _ = calculate_capm(market, irx)
-    signals = market[["Sample", "TSLA_Return", "VOO_Return"]].copy()
-    signals["AR"] = market.TSLA_Return - market.Expected_Return
+    signals = market[["Sample", "NVDA_Return", "VOO_Return"]].copy()
+    signals["AR"] = market.NVDA_Return - market.Expected_Return
     signals["IOC"] = 50.0
     signals["CAR_Z"] = 1.0
     signals["Trade_Signal"] = 0.0
@@ -37,8 +37,8 @@ class CAPMTests(unittest.TestCase):
         result, summary = calculate_capm(market, irx)
         np.testing.assert_allclose(result.RF_Daily, irx.IRX_Annual_Percent / 100 / 252)
         train = result.iloc[:10]
-        beta = train.TSLA_Excess.cov(train.Market_Excess) / train.Market_Excess.var()
-        alpha = train.TSLA_Excess.mean() - beta * train.Market_Excess.mean()
+        beta = train.NVDA_Excess.cov(train.Market_Excess) / train.Market_Excess.var()
+        alpha = train.NVDA_Excess.mean() - beta * train.Market_Excess.mean()
         self.assertAlmostEqual(summary["Alpha_CAPM"], alpha)
         self.assertAlmostEqual(summary["Beta_CAPM"], beta)
         self.assertAlmostEqual(summary["Sigma_Epsilon_CAPM"], train.CAPM_AR.std(ddof=1))
@@ -64,7 +64,7 @@ class CAPMTests(unittest.TestCase):
     def test_changes_to_test_cannot_change_fitted_parameters(self):
         market, irx = market_sample()
         result, summary = calculate_capm(market, irx)
-        market.loc[market.Sample.eq("Test"), ["TSLA_Return", "VOO_Return"]] += .5
+        market.loc[market.Sample.eq("Test"), ["NVDA_Return", "VOO_Return"]] += .5
         irx.iloc[10:, 0] = 20
         changed, new_summary = calculate_capm(market, irx)
         self.assertEqual(summary, new_summary)
@@ -77,7 +77,7 @@ class BacktestTests(unittest.TestCase):
         signals.iloc[2, signals.columns.get_loc("Trade_Signal")] = 1
         events = calculate_backtest(signals, capm)
         row = events.iloc[0]
-        actual = np.prod(1 + capm.TSLA_Return.iloc[2:7]) - 1
+        actual = np.prod(1 + capm.NVDA_Return.iloc[2:7]) - 1
         normal = np.prod(1 + capm.Expected_Return.iloc[2:7]) - 1
         normal_capm = np.prod(1 + capm.CAPM_Expected_Return.iloc[2:7]) - 1
         self.assertEqual(events.index[0], signals.index[2])
@@ -91,9 +91,9 @@ class BacktestTests(unittest.TestCase):
 
     def test_short_profit_and_cost_with_declining_asset(self):
         signals, capm = event_sample()
-        capm.loc[:, "TSLA_Return"] = -.01
-        signals.loc[:, "TSLA_Return"] = -.01
-        signals["AR"] = signals.TSLA_Return - capm.Expected_Return
+        capm.loc[:, "NVDA_Return"] = -.01
+        signals.loc[:, "NVDA_Return"] = -.01
+        signals["AR"] = signals.NVDA_Return - capm.Expected_Return
         signals.iloc[2, signals.columns.get_loc("Trade_Signal")] = -1
         row = calculate_backtest(signals, capm).iloc[0]
         self.assertAlmostEqual(row.Strategy_Gross_Return, 1 - .99 ** 5)
@@ -149,7 +149,7 @@ class BacktestTests(unittest.TestCase):
 
     def test_reject_mismatched_input_versions(self):
         signals, capm = event_sample()
-        capm.iloc[0, capm.columns.get_loc("TSLA_Return")] += .01
+        capm.iloc[0, capm.columns.get_loc("NVDA_Return")] += .01
         with self.assertRaises(ValueError):
             calculate_backtest(signals, capm)
 

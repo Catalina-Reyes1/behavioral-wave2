@@ -130,7 +130,7 @@ class GDELTTests(unittest.TestCase):
         import main
 
         dates = pd.date_range("2019-01-01", periods=10, name="Date")
-        market = pd.DataFrame({"TSLA_Return": [.01, -.02, .04, .02, .01, -.01, .03, .02, -.01, .05],
+        market = pd.DataFrame({"NVDA_Return": [.01, -.02, .04, .02, .01, -.01, .03, .02, -.01, .05],
                                "VOO_Return": [.01, -.01, .02, .01, -.01, .02, .01, .01, -.02, .03]}, index=dates)
         attention = pd.DataFrame({"Pageviews": 10, "IOC": 0.0}, index=dates)
         calls = []

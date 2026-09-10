@@ -53,7 +53,7 @@ def main():
     print(f"Observaciones Test: {summary['n_test']}")
     print(f"Fecha de inicio Test: {summary['test_start']:%Y-%m-%d}")
     columns = [
-        "TSLA_Return", "VOO_Return", "Expected_Return", "AR",
+        "NVDA_Return", "VOO_Return", "Expected_Return", "AR",
         "CAR_5", "CAR_Z", "Sample",
     ]
     print("\nUltimas 5 observaciones del modelo:")
@@ -65,7 +65,7 @@ def main():
     except WikimediaError as exc:
         raise SystemExit(f"\nWIKIMEDIA ATTENTION: descarga no completada. {exc}") from exc
     print_attention_summary(attention)
-    print("\nArchivo creado: data/raw/tsla_wikipedia_pageviews.csv")
+    print("\nArchivo creado: data/raw/nvda_wikipedia_pageviews.csv")
     print("Archivo creado: data/processed/attention_wave.csv")
     run_signals()
     run_capm()

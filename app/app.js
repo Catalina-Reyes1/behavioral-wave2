@@ -99,23 +99,23 @@
     const chart = $("#history-chart");
     if (!window.Plotly) throw new Error("No se pudo cargar la biblioteca local del gráfico.");
     const o = data.overview, market = data.series.market, attention = data.series.attention;
-    const prices = new Map(market.map((row) => [row.Date, row.TSLA_Price]));
+    const prices = new Map(market.map((row) => [row.Date, row.NVDA_Price]));
     const attentionByDate = new Map(attention.map((row) => [row.Date, row.IOC]));
     const x = market.map((row) => row.Date);
     const traces = [
-      { type: "scatter", mode: "lines", name: "TSLA · USD", x, y: market.map((row) => row.TSLA_Price), line: { color: "#1d1d1f", width: 1.55 }, connectgaps: false,
-        customdata: market.map((row) => [number(row.TSLA_Price, 2), number(attentionByDate.get(row.Date), 2)]),
-        hovertemplate: "Fecha: %{x|%d/%m/%Y}<br>TSLA: USD %{customdata[0]}<br>IOC del día: %{customdata[1]}<extra></extra>" },
+      { type: "scatter", mode: "lines", name: "NVDA · USD", x, y: market.map((row) => row.NVDA_Price), line: { color: "#1d1d1f", width: 1.55 }, connectgaps: false,
+        customdata: market.map((row) => [number(row.NVDA_Price, 2), number(attentionByDate.get(row.Date), 2)]),
+        hovertemplate: "Fecha: %{x|%d/%m/%Y}<br>NVDA: USD %{customdata[0]}<br>IOC del día: %{customdata[1]}<extra></extra>" },
       { type: "scatter", mode: "lines", name: "IOC", x: attention.map((row) => row.Date), y: attention.map((row) => row.IOC), yaxis: "y2", line: { color: "#0071e3", width: 1.2 }, fill: "tozeroy", fillcolor: "rgba(0,113,227,.07)", connectgaps: false,
         customdata: attention.map((row) => [number(row.IOC, 2), prices.has(row.Date) ? `USD ${number(prices.get(row.Date), 2)}` : "Sin sesión de mercado"]),
-        hovertemplate: "Fecha: %{x|%d/%m/%Y}<br>IOC del día: %{customdata[0]}<br>TSLA: %{customdata[1]}<extra></extra>" },
+        hovertemplate: "Fecha: %{x|%d/%m/%Y}<br>IOC del día: %{customdata[0]}<br>NVDA: %{customdata[1]}<extra></extra>" },
     ];
     [1, -1].forEach((sign) => {
       const events = data.events.signals.filter((row) => row.Signal === sign);
       traces.push({ type: "scatter", mode: "markers", name: `Signal ${sign === 1 ? "+1" : "−1"}`, x: events.map((row) => row.Date), y: events.map((row) => prices.get(row.Date)),
         marker: { symbol: sign === 1 ? "triangle-up" : "triangle-down", size: 7, color: sign === 1 ? "#0071e3" : "#6e6e73", line: { color: "white", width: .7 } },
-        customdata: events.map((row) => [number(row.IOC, 2), number(row.CAR_Z, 3), row.Sample, number(row.TSLA_Price, 2), date(row.Entry_Date)]),
-        hovertemplate: `<b>Evento: %{x|%d/%m/%Y}</b><br>TSLA: USD %{customdata[3]}<br>IOC del día: %{customdata[0]}<br>Signal ${sign === 1 ? "+1 · Posible reversión alcista" : "−1 · Posible reversión bajista"}<br>CAR_Z: %{customdata[1]}<br>Sample: %{customdata[2]}<br>Entrada t+1: %{customdata[4]}<br>Trade_Signal en la entrada: ${sign === 1 ? "+1" : "−1"}<extra></extra>` });
+        customdata: events.map((row) => [number(row.IOC, 2), number(row.CAR_Z, 3), row.Sample, number(row.NVDA_Price, 2), date(row.Entry_Date)]),
+        hovertemplate: `<b>Evento: %{x|%d/%m/%Y}</b><br>NVDA: USD %{customdata[3]}<br>IOC del día: %{customdata[0]}<br>Signal ${sign === 1 ? "+1 · Posible reversión alcista" : "−1 · Posible reversión bajista"}<br>CAR_Z: %{customdata[1]}<br>Sample: %{customdata[2]}<br>Entrada t+1: %{customdata[4]}<br>Trade_Signal en la entrada: ${sign === 1 ? "+1" : "−1"}<extra></extra>` });
     });
     const axis = { showgrid: true, gridcolor: "#f0f0f3", zeroline: false, tickfont: { color: "#6e6e73", size: 10 }, fixedrange: true };
     const layout = {
@@ -124,7 +124,7 @@
       // Una etiqueta por punto: nunca reunir eventos de fechas diferentes.
       hovermode: "closest", hoverdistance: 12, hoverlabel: { bgcolor: "white", bordercolor: "#dedee5", font: { size: 11 } }, dragmode: "zoom", separators: ",.",
       xaxis: { type: "date", anchor: "y2", range: [o.period.start, o.period.end], showgrid: false, tickfont: { color: "#6e6e73", size: 10 }, tickformat: "%Y", hoverformat: "%d/%m/%Y", fixedrange: false },
-      yaxis: { ...axis, domain: [.42, 1], title: { text: "TSLA · USD", font: { size: 10, color: "#6e6e73" }, standoff: 8 }, rangemode: "tozero" },
+      yaxis: { ...axis, domain: [.42, 1], title: { text: "NVDA · USD", font: { size: 10, color: "#6e6e73" }, standoff: 8 }, rangemode: "tozero" },
       yaxis2: { ...axis, domain: [0, .28], title: { text: "IOC", font: { size: 10, color: "#0071e3" }, standoff: 8 }, range: [0, 105], tickvals: [0, 50, 100] },
       shapes: [
         { type: "line", xref: "x", yref: "paper", x0: o.split.test_start, x1: o.split.test_start, y0: 0, y1: 1, line: { color: "#b1b1ba", width: 1, dash: "dot" } },

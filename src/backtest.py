@@ -17,8 +17,8 @@ RETURN_COLUMNS = ["Forward_Return_5D", "Strategy_Gross_Return", "Strategy_Net_Re
 
 def calculate_backtest(signals: pd.DataFrame, capm: pd.DataFrame) -> pd.DataFrame:
     for name, frame, required in [
-        ("Señales", signals, ["Sample", "Trade_Signal", "TSLA_Return", "VOO_Return", "AR", "IOC", "CAR_Z"]),
-        ("CAPM", capm, ["Sample", "TSLA_Return", "VOO_Return", "Expected_Return", "CAPM_Expected_Return"]),
+        ("Señales", signals, ["Sample", "Trade_Signal", "NVDA_Return", "VOO_Return", "AR", "IOC", "CAR_Z"]),
+        ("CAPM", capm, ["Sample", "NVDA_Return", "VOO_Return", "Expected_Return", "CAPM_Expected_Return"]),
     ]:
         if frame.empty or not set(required).issubset(frame):
             raise ValueError(f"{name}: faltan datos o columnas requeridas.")
@@ -27,10 +27,10 @@ def calculate_backtest(signals: pd.DataFrame, capm: pd.DataFrame) -> pd.DataFram
     signals, capm = signals.sort_index(), capm.sort_index()
     if not signals.index.equals(capm.index) or not signals.Sample.equals(capm.Sample):
         raise ValueError("Señales y CAPM deben conservar exactamente el calendario y Sample del mercado.")
-    for column in ["TSLA_Return", "VOO_Return"]:
+    for column in ["NVDA_Return", "VOO_Return"]:
         if not np.allclose(signals[column], capm[column], equal_nan=True, rtol=1e-10, atol=1e-12):
             raise ValueError(f"Los archivos usan versiones diferentes de {column}; regenere el flujo completo.")
-    if not np.allclose(signals.TSLA_Return - signals.AR, capm.Expected_Return, equal_nan=True, atol=1e-12):
+    if not np.allclose(signals.NVDA_Return - signals.AR, capm.Expected_Return, equal_nan=True, atol=1e-12):
         raise ValueError("El retorno normal del Market Model no coincide con el AR de señales.")
     if not signals.Trade_Signal.dropna().isin([-1, 0, 1]).all():
         raise ValueError("Trade_Signal debe ser -1, 0, +1 o NaN inicial.")
@@ -58,7 +58,7 @@ def calculate_backtest(signals: pd.DataFrame, capm: pd.DataFrame) -> pd.DataFram
             continue
         events.loc[date, "Exit_Date"] = window.index[-1]
         events.loc[date, "Crosses_Sample_Boundary"] = source.Sample != signals.loc[date, "Sample"] or window.Sample.ne(signals.loc[date, "Sample"]).any()
-        values = window[["TSLA_Return", "Expected_Return", "CAPM_Expected_Return"]].to_numpy()
+        values = window[["NVDA_Return", "Expected_Return", "CAPM_Expected_Return"]].to_numpy()
         if not np.isfinite(values).all():
             events.loc[date, "Status"] = "Missing_Returns"
             continue

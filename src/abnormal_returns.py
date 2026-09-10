@@ -12,10 +12,10 @@ def calculate_abnormal_returns(
         raise ValueError("Los datos deben tener un indice de fechas (DatetimeIndex).")
 
     # Limpiar retornos y ordenar fechas antes de la division cronologica.
-    result = df.dropna(subset=["TSLA_Return", "VOO_Return"]).sort_index().copy()
+    result = df.dropna(subset=["NVDA_Return", "VOO_Return"]).sort_index().copy()
     if result.index.hasnans or result.index.has_duplicates:
         raise ValueError("Las fechas deben ser validas y unicas.")
-    if not np.isfinite(result[["TSLA_Return", "VOO_Return"]].to_numpy()).all():
+    if not np.isfinite(result[["NVDA_Return", "VOO_Return"]].to_numpy()).all():
         raise ValueError("Los retornos deben ser finitos.")
     n_train = int(len(result) * train_ratio)
     n_test = len(result) - n_train
@@ -24,7 +24,7 @@ def calculate_abnormal_returns(
 
     train = result.iloc[:n_train]
     x = train["VOO_Return"].to_numpy()
-    y = train["TSLA_Return"].to_numpy()
+    y = train["NVDA_Return"].to_numpy()
     design = np.column_stack([np.ones(n_train), x])
     if np.linalg.matrix_rank(design) < 2:
         raise ValueError("VOO_Return debe variar en Train para estimar beta.")
@@ -38,7 +38,7 @@ def calculate_abnormal_returns(
         raise ValueError("Sigma epsilon debe ser positiva para calcular CAR_Z.")
 
     result["Expected_Return"] = alpha + beta * result["VOO_Return"]
-    result["AR"] = result["TSLA_Return"] - result["Expected_Return"]
+    result["AR"] = result["NVDA_Return"] - result["Expected_Return"]
     # CAR suma cinco retornos anormales consecutivos, incluso en el corte Train/Test.
     result["CAR_5"] = result["AR"].rolling(window=5, min_periods=5).sum()
     result["CAR_Z"] = result["CAR_5"] / (sigma_epsilon * np.sqrt(5))
