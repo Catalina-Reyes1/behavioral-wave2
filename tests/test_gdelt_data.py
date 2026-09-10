@@ -143,8 +143,10 @@ class GDELTTests(unittest.TestCase):
             return attention
 
         output = io.StringIO()
-        with patch.object(main, "download_market_data", return_value=market), patch.object(main, "save_market_data", side_effect=save), patch.object(main, "run_wikimedia_attention", side_effect=download), patch.object(main, "run_signals") as signals, patch.object(main, "run_capm") as capm, patch.object(main, "run_backtest") as backtest, patch("src.gdelt_data.download_gdelt_data") as gdelt, redirect_stdout(output):
+        period = {"analysis_start": str(dates[0].date()), "analysis_end": str(dates[-1].date())}
+        with patch.object(main, "END_DATE", period["analysis_end"]), patch.object(main, "START_DATE", period["analysis_start"]), patch.object(main, "Path"), patch.object(main, "download_wikimedia_pageviews", return_value=attention), patch.object(main, "determine_common_period", return_value=period), patch.object(main, "export_web_data") as web, patch.object(main, "download_market_data", return_value=market), patch.object(main, "save_market_data", side_effect=save), patch.object(main, "run_wikimedia_attention", side_effect=download), patch.object(main, "run_signals") as signals, patch.object(main, "run_capm") as capm, patch.object(main, "run_backtest") as backtest, patch("src.gdelt_data.download_gdelt_data") as gdelt, redirect_stdout(output):
             main.main()
+        web.assert_called_once_with()
         capm.assert_called_once_with()
         backtest.assert_called_once_with()
         signals.assert_called_once_with()

@@ -1,4 +1,5 @@
 import json
+from datetime import date, timedelta
 from pathlib import Path
 
 from config import ASSET, MARKET, START_DATE, END_DATE, TRAIN_RATIO, ATTENTION_START_DATE, MARKET_DOWNLOAD_START
@@ -20,7 +21,8 @@ def main():
         asset=ASSET,
         market=MARKET,
         start=MARKET_DOWNLOAD_START,
-        end=END_DATE,
+        # Yahoo excluye end; Wikimedia y el período del estudio lo incluyen.
+        end=(date.fromisoformat(END_DATE) + timedelta(days=1)).isoformat() if END_DATE else None,
     )
 
     # Adquirir las fuentes primero para conocer el extremo común sin mirar resultados.
@@ -28,6 +30,8 @@ def main():
     period = determine_common_period(df, raw_attention)
     if period["analysis_start"] != START_DATE:
         raise RuntimeError("Cambió la disponibilidad inicial; vuelva a ejecutar python -m src.history_period.")
+    if END_DATE is not None and period["analysis_end"] != END_DATE:
+        raise RuntimeError("Las fuentes no cubren el corte final congelado; se conservan los resultados anteriores.")
     df = df.loc[:period["analysis_end"]]
     save_market_data(df, "data/raw/market_data.csv")
     Path("data/processed/analysis_period.json").write_text(json.dumps(period, indent=2, ensure_ascii=False), encoding="utf-8")

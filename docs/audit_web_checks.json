@@ -1,0 +1,14 @@
+[
+  {
+    "protocol": "http:",
+    "status": "passed",
+    "chart_markers": 70,
+    "mode": "simulated DOM and Plotly; no visual rendering"
+  },
+  {
+    "protocol": "file:",
+    "status": "passed",
+    "chart_markers": 70,
+    "mode": "simulated DOM and Plotly; no visual rendering"
+  }
+]

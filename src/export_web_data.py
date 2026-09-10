@@ -78,7 +78,13 @@ def build_web_data(root: Path = ROOT) -> dict:
     horizons = {market.index.get_loc(pd.Timestamp(row.Exit_Date)) - market.index.get_loc(date) + 1 for date, row in completed.iterrows()}
     if horizons != {5}:
         raise ValueError("El horizonte guardado no es de cinco sesiones.")
-    signal_events = signals.loc[signals.Signal.ne(0), ["Sample", "IOC", "CAR_Z", "Signal", "Trade_Signal"]]
+    signal_events = signals.loc[signals.Signal.ne(0), ["Sample", "IOC", "CAR_Z", "Signal", "Trade_Signal"]].copy()
+    signal_events["TSLA_Price"] = market.loc[signal_events.index, "TSLA_Price"]
+    next_session = pd.Series(market.index, index=market.index).shift(-1)
+    signal_events["Entry_Date"] = next_session.reindex(signal_events.index).dt.strftime("%Y-%m-%d")
+    signal_events["Entry_Trade_Signal"] = signals.Trade_Signal.shift(-1).reindex(signal_events.index)
+    if not np.allclose(signal_events.Entry_Trade_Signal.dropna(), signal_events.loc[signal_events.Entry_Trade_Signal.notna(), "Signal"]):
+        raise ValueError("Los eventos no corresponden a Trade_Signal en la siguiente sesión.")
     timeline = market[["TSLA_Price", "Sample"]].join(signals[["IOC", "Signal"]])
     latest_ioc = attention.IOC.dropna()
     overview = {
@@ -97,9 +103,23 @@ def build_web_data(root: Path = ROOT) -> dict:
                       "latest_ioc": float(latest_ioc.iloc[-1]), "latest_ioc_date": str(latest_ioc.index[-1].date())},
         "results": json.loads(summary.reset_index().to_json(orient="records", double_precision=15)),
     }
+    overview["signal_counts"] = {sample: int(signal_events.Sample.eq(sample).sum()) for sample in ["Train", "Test"]}
+    archive = root / "results/pre_expansion"
+    archived_market = _read(archive, "data/processed/market_model.csv")
+    archived_signals = _read(archive, "data/processed/behavioral_signals.csv")
+    archived_summary = pd.read_csv(archive / "results/backtest_summary.csv", index_col="Sample")
+    overview["robustness"] = {
+        "label": "Período reciente: 2019–2026", "source": "results/pre_expansion/",
+        "start": str(archived_market.index.min().date()), "end": str(archived_market.index.max().date()),
+        "sessions": len(archived_market), "events": int(archived_signals.Signal.ne(0).sum()),
+        "test": json.loads(archived_summary.loc["Test"].to_json(double_precision=15)),
+    }
     paths = ["data/processed/market_model.csv", "data/processed/attention_wave.csv", "data/processed/behavioral_signals.csv",
              "data/processed/capm_model.csv", "data/processed/backtest_events.csv", "results/backtest_summary.csv",
              "data/raw/tsla_wikipedia_pageviews.metadata.json", "src/backtest.py"]
+    paths.extend(["results/pre_expansion/data/processed/market_model.csv",
+                  "results/pre_expansion/data/processed/behavioral_signals.csv",
+                  "results/pre_expansion/results/backtest_summary.csv"])
     overview["sources"] = [{"path": path, "sha256": hashlib.sha256((root / path).read_bytes()).hexdigest()} for path in paths]
     return {"overview": overview, "series": {"market": _records(timeline), "attention": _records(attention[["IOC", "Pageviews"]])},
             "events": {"signals": _records(signal_events), "trades": _records(events)}}

@@ -126,3 +126,20 @@ python -m http.server 8000 --bind 127.0.0.1 --directory app
 ```
 
 Abrir `http://127.0.0.1:8000`. Para detener el servidor, usar Ctrl+C. No es necesario ejecutar `main.py` para presentar o exportar el estudio ya validado.
+
+
+## 2026-09-09 — Auditoría técnica y académica final
+
+Se auditó la muestra principal congelada 2017-04-03–2026-09-08: 2.371 sesiones, 70 eventos (53 Train / 17 Test). El alcance fue verificar y explicar, no mejorar el resultado. La ampliación histórica previa buscó aumentar observaciones y potencia de evaluación; todas las reglas permanecieron congeladas.
+
+- Se identificó el problema del tooltip: Signal −1 del 03/11/2021 y Signal +1 del 09/11/2021 aparecían agrupadas mediante hover unificado sin fecha individual. El 05/11 tiene IOC 32,468647 y ninguna señal. Los CSV y JSON eran consistentes; no se modificó signals.py.
+- Se cambió a hover individual con fecha, precio, IOC, CAR_Z, Sample y entrada t+1. Los 70 eventos siguen presentes.
+- La auditoría independiente reconstruyó 3.506 días de atención, AR/CAR y CAPM sobre 2.371 sesiones, 70 operaciones y el resumen. Tolerancia absoluta 1e−9; máximo error IOC inferior a 3e−10. Se documentaron cinco IOC, cuatro señales y tres operaciones completas.
+- Perturbar Test no cambia parámetros ni señales Train. El primer Trade_Signal NaN se conserva: no hay sesión previa, no es una orden.
+- END_DATE estaba abierto. Se fijó el corte inclusivo pedido, 2026-09-08, y se adaptó el end exclusivo de Yahoo; si las fuentes no cubren ese extremo, main.py se detiene antes de guardar. Esto protege el estudio sin cambiar fórmulas ni resultados.
+- Se completaron las explicaciones web de IOC propio del proyecto, Wikimedia, selectividad, valor económico y eficiencia. La robustez 2019–2026 usa únicamente results/pre_expansion/, sin recalcular ni elegir el mejor período.
+- README quedó como manual para el grupo. docs/auditoria_final.md contiene evidencia, limitaciones y revisión de los nueve criterios del profesor.
+- Validación: 52 pruebas Python aprobadas (40 existentes + 12 nuevas) y dos escenarios JavaScript simulados HTTP/file. No hubo navegador integrado disponible; queda pendiente revisión visual real de escritorio/móvil y hover. No se declara renderizado verificado.
+- Se preservaron hashes de 25 archivos de datos, modelos y workflow. No se ejecutó el pipeline financiero real ni se alteraron los CSV. Se regeneraron únicamente las exportaciones web necesarias. No se tocó .github/workflows/static.yml, ni se hizo commit o push.
+
+La conclusión no cambia: 17 Test, 52,94% ganadoras, neto medio +1,684%, p = 0,342869; los excesos frente a Market Model y CAPM tampoco son significativos. No se afirma una anomalía explotable. La evaluación cierre a cierre no garantiza disponibilidad de Pageviews al precio de entrada; esa limitación, el solapamiento y el costo de préstamo de cortos omitido quedan explícitos.

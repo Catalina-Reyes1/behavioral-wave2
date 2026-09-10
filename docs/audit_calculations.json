@@ -1,0 +1,413 @@
+{
+  "tolerance_absolute": 1e-09,
+  "ioc": {
+    "observations": 3506,
+    "max_errors": {
+      "Log_Pageviews": 1.7763568394002505e-15,
+      "Attention_Z": 4.573408318719885e-11,
+      "IAA": 4.573408318719885e-11,
+      "IOC": 2.9812952107022284e-10,
+      "IOC_Velocity": 2.9812952107022284e-10,
+      "IOC_Acceleration": 5.945821612840518e-10
+    },
+    "cases": [
+      {
+        "Caso": "Normal",
+        "Date": "2017-04-19",
+        "Pageviews": 7233,
+        "Inicio_Referencia": "2017-02-18",
+        "Fin_Referencia": "2017-04-18",
+        "Log_Pageviews": 8.886547412512042,
+        "Media_60": 8.872361700527332,
+        "Sigma_60": 0.23029162265405467,
+        "Attention_Z": 0.061598905862157605,
+        "IAA": 0.061598905862157605,
+        "IOC": 3.07897177732905,
+        "IOC_CSV": 3.0789717773290635
+      },
+      {
+        "Caso": "Extremo",
+        "Date": "2017-04-04",
+        "Pageviews": 17168,
+        "Inicio_Referencia": "2017-02-03",
+        "Fin_Referencia": "2017-04-03",
+        "Log_Pageviews": 9.750860711077213,
+        "Media_60": 8.654080455125712,
+        "Sigma_60": 0.5200243173562463,
+        "Attention_Z": 2.109094169917719,
+        "IAA": 2.109094169917719,
+        "IOC": 78.35678936346586,
+        "IOC_CSV": 78.35678936346581
+      },
+      {
+        "Caso": "Máximo",
+        "Date": "2017-11-17",
+        "Pageviews": 29940,
+        "Inicio_Referencia": "2017-09-18",
+        "Fin_Referencia": "2017-11-16",
+        "Log_Pageviews": 10.306984057549448,
+        "Media_60": 8.898863981337561,
+        "Sigma_60": 0.11876188141757701,
+        "Attention_Z": 11.856666965899734,
+        "IAA": 11.856666965899734,
+        "IOC": 99.99858178563832,
+        "IOC_CSV": 99.99858178563832
+      },
+      {
+        "Caso": "Evento",
+        "Date": "2017-07-05",
+        "Pageviews": 9571,
+        "Inicio_Referencia": "2017-05-06",
+        "Fin_Referencia": "2017-07-04",
+        "Log_Pageviews": 9.166597449028265,
+        "Media_60": 8.81737297262046,
+        "Sigma_60": 0.1387625799447875,
+        "Attention_Z": 2.5167049830491677,
+        "IAA": 2.5167049830491677,
+        "IOC": 85.06092709180606,
+        "IOC_CSV": 85.06092709180747
+      },
+      {
+        "Caso": "Cerca del tooltip",
+        "Date": "2021-11-05",
+        "Pageviews": 11278,
+        "Inicio_Referencia": "2021-09-06",
+        "Fin_Referencia": "2021-11-04",
+        "Log_Pageviews": 9.330697868639916,
+        "Media_60": 9.138544998955602,
+        "Sigma_60": 0.2851973670366868,
+        "Attention_Z": 0.6737540100066777,
+        "IAA": 0.6737540100066777,
+        "IOC": 32.468646907041844,
+        "IOC_CSV": 32.468646907044274
+      }
+    ]
+  },
+  "models": {
+    "alpha": 0.0014848494041614663,
+    "beta": 1.482177571805223,
+    "sigma_epsilon": 0.03425122358944886,
+    "capm_alpha": 0.0015174499810207034,
+    "capm_beta": 1.482622983002636,
+    "capm_sigma": 0.034250181643281016,
+    "max_errors": {
+      "Expected_Return": 4.440892098500626e-16,
+      "AR": 4.3021142204224816e-16,
+      "CAR_5": 9.08995101411847e-16,
+      "CAR_Z": 1.1213252548714081e-14,
+      "CAPM_Expected_Return": 1.3877787807814457e-16,
+      "CAPM_AR": 1.2836953722228372e-16
+    },
+    "cases": [
+      {
+        "Date": "2017-04-07",
+        "VOO_Return": -0.0008792810812819,
+        "TSLA_Return": 0.0128556379774493,
+        "Expected_Return": 0.0001815987061727889,
+        "AR": 0.012674039271276511,
+        "CAR_5": 0.08233867504944939,
+        "CAR_Z": 1.0750849475903193
+      },
+      {
+        "Date": "2021-11-03",
+        "VOO_Return": 0.0060277682357634,
+        "TSLA_Return": 0.0357167380197345,
+        "Expected_Return": 0.010419072291249916,
+        "AR": 0.025297665728484582,
+        "CAR_5": 0.12006140849151618,
+        "CAR_Z": 1.5676255778733803
+      },
+      {
+        "Date": "2021-11-05",
+        "VOO_Return": 0.0034012197960515,
+        "TSLA_Return": -0.006358169933862,
+        "Expected_Return": 0.006526061102648934,
+        "AR": -0.012884231036510934,
+        "CAR_5": 0.06000768475281579,
+        "CAR_Z": 0.7835122265296735
+      },
+      {
+        "Date": "2021-11-09",
+        "VOO_Return": -0.0035013745259273,
+        "TSLA_Return": -0.1199030325435984,
+        "Expected_Return": -0.003704809388658124,
+        "AR": -0.11619822315494027,
+        "CAR_5": -0.15066056959162444,
+        "CAR_Z": -1.9671546872240124
+      },
+      {
+        "Date": "2023-11-03",
+        "VOO_Return": 0.0092476609616534,
+        "TSLA_Return": 0.0066359079377757,
+        "Expected_Return": 0.015191525073182856,
+        "AR": -0.008555617135407156,
+        "CAR_5": -0.02961379302472056,
+        "CAR_Z": -0.38666329161614515
+      }
+    ]
+  },
+  "signals": {
+    "sessions": 2371,
+    "events": 70,
+    "train_events": 53,
+    "test_events": 17,
+    "positive": 42,
+    "negative": 28,
+    "thresholds": {
+      "IOC_Extreme_Threshold": 68.2999315649936,
+      "CAR_Positive_Threshold": 1.123153860368553,
+      "CAR_Negative_Threshold": -1.1170966333703574
+    },
+    "cases": [
+      {
+        "Date": "2021-10-29",
+        "IOC_Prev": 91.29329409430572,
+        "IOC": 80.04698826008335,
+        "CAR_Z": 2.405981758204065,
+        "Signal": -1,
+        "Entry_Date": "2021-11-01",
+        "Trade_Signal": -1
+      },
+      {
+        "Date": "2021-11-03",
+        "IOC_Prev": 86.77185626196011,
+        "IOC": 66.38838324793778,
+        "CAR_Z": 1.5676255778733783,
+        "Signal": -1,
+        "Entry_Date": "2021-11-04",
+        "Trade_Signal": -1
+      },
+      {
+        "Date": "2021-11-09",
+        "IOC_Prev": 97.78609909780046,
+        "IOC": 71.5676210209983,
+        "CAR_Z": -1.9671546872240129,
+        "Signal": 1,
+        "Entry_Date": "2021-11-10",
+        "Trade_Signal": 1
+      },
+      {
+        "Date": "2021-11-10",
+        "IOC_Prev": 71.5676210209983,
+        "IOC": 60.11099470218248,
+        "CAR_Z": -1.593974065564282,
+        "Signal": 1,
+        "Entry_Date": "2021-11-11",
+        "Trade_Signal": 1
+      }
+    ],
+    "initial_trade_signal": "NaN: shift(1), no existe sesión previa"
+  },
+  "backtest": {
+    "events_checked": 70,
+    "cases": [
+      {
+        "Date": "2017-07-06",
+        "Sample": "Train",
+        "Trade_Signal": 1.0,
+        "Exit_Date": "2017-07-12",
+        "Returns": [
+          -0.0558255917451672,
+          0.0142148825255634,
+          0.0090352135473033,
+          0.0353425279548333,
+          0.0070289253423574
+        ],
+        "Forward_Return_5D": 0.007429178113441015,
+        "Strategy_Gross_Return": 0.007429178113441015,
+        "Transaction_Cost": 0.002,
+        "Strategy_Net_Return": 0.005429178113441015,
+        "MarketModel_Normal_5D": 0.014948231488501218,
+        "CAPM_Normal_5D": 0.015016840425933209,
+        "Abnormal_Strategy_MarketModel": -0.009519053375060203,
+        "Abnormal_Strategy_CAPM": -0.009587662312492194
+      },
+      {
+        "Date": "2018-08-06",
+        "Sample": "Train",
+        "Trade_Signal": -1.0,
+        "Exit_Date": "2018-08-10",
+        "Returns": [
+          -0.0177498966056155,
+          0.1098862358771555,
+          -0.024316999264261,
+          -0.0483068984460444,
+          0.0086252795575232
+        ],
+        "Forward_Return_5D": 0.02102425069783531,
+        "Strategy_Gross_Return": -0.02102425069783531,
+        "Transaction_Cost": 0.002,
+        "Strategy_Net_Return": -0.023024250697835313,
+        "MarketModel_Normal_5D": 0.004333995839756133,
+        "CAPM_Normal_5D": 0.004304633809537606,
+        "Abnormal_Strategy_MarketModel": -0.01869025485807918,
+        "Abnormal_Strategy_CAPM": -0.018719616888297708
+      },
+      {
+        "Date": "2024-01-18",
+        "Sample": "Test",
+        "Trade_Signal": 1.0,
+        "Exit_Date": "2024-01-24",
+        "Returns": [
+          -0.017026203279914,
+          0.001463080760099,
+          -0.015976244642273,
+          0.0016283349277841,
+          -0.0062637351172268
+        ],
+        "Forward_Return_5D": -0.03581536122200557,
+        "Strategy_Gross_Return": -0.03581536122200557,
+        "Transaction_Cost": 0.002,
+        "Strategy_Net_Return": -0.03781536122200557,
+        "MarketModel_Normal_5D": 0.048570027907195,
+        "CAPM_Normal_5D": 0.04823433396005905,
+        "Abnormal_Strategy_MarketModel": -0.08638538912920057,
+        "Abnormal_Strategy_CAPM": -0.08604969518206462
+      }
+    ],
+    "test_statistics": {
+      "Net": {
+        "t": 0.9775049160779438,
+        "p": 0.3428686008369947
+      },
+      "MarketModel": {
+        "t": 0.2629861344813084,
+        "p": 0.7959177323482178
+      },
+      "CAPM": {
+        "t": 0.2654446580987893,
+        "p": 0.7940566675969488
+      }
+    },
+    "summary": [
+      {
+        "Sample": "Train",
+        "Trades": 53,
+        "Candidate_Events": 53,
+        "Incomplete_Events": 0,
+        "Boundary_Events": 0,
+        "Win_Rate_Pct": 39.62264150943396,
+        "Mean_Gross_Return": -0.020756353283226,
+        "Mean_Net_Return": -0.022756353283226,
+        "Median_Net_Return": -0.006820470520407,
+        "Std_Net_Return": 0.068508908572013,
+        "Cumulative_Event_Net_Return": -0.74157771746911,
+        "Mean_Abnormal_MarketModel": -0.019584053726509,
+        "Mean_Abnormal_CAPM": -0.019516864758242,
+        "Net_T_Statistic": null,
+        "Net_P_Value": null,
+        "MarketModel_T_Statistic": null,
+        "MarketModel_P_Value": null,
+        "CAPM_T_Statistic": null,
+        "CAPM_P_Value": null
+      },
+      {
+        "Sample": "Test",
+        "Trades": 17,
+        "Candidate_Events": 17,
+        "Incomplete_Events": 0,
+        "Boundary_Events": 0,
+        "Win_Rate_Pct": 52.94117647058824,
+        "Mean_Gross_Return": 0.01884009189484,
+        "Mean_Net_Return": 0.01684009189484,
+        "Median_Net_Return": 0.006818501023025,
+        "Std_Net_Return": 0.071031333434232,
+        "Cumulative_Event_Net_Return": 0.276836633730419,
+        "Mean_Abnormal_MarketModel": 0.004600279313141,
+        "Mean_Abnormal_CAPM": 0.004639354921081,
+        "Net_T_Statistic": 0.977504916077943,
+        "Net_P_Value": 0.342868600836995,
+        "MarketModel_T_Statistic": 0.262986134481308,
+        "MarketModel_P_Value": 0.795917732348218,
+        "CAPM_T_Statistic": 0.265444658098789,
+        "CAPM_P_Value": 0.794056667596949
+      },
+      {
+        "Sample": "Total",
+        "Trades": 70,
+        "Candidate_Events": 70,
+        "Incomplete_Events": 0,
+        "Boundary_Events": 0,
+        "Win_Rate_Pct": 42.85714285714285,
+        "Mean_Gross_Return": -0.011140073739981,
+        "Mean_Net_Return": -0.013140073739981,
+        "Median_Net_Return": -0.005603204151473,
+        "Std_Net_Return": 0.070707450954139,
+        "Cumulative_Event_Net_Return": -0.670036962692327,
+        "Mean_Abnormal_MarketModel": -0.013710715702594,
+        "Mean_Abnormal_CAPM": -0.013650354264692,
+        "Net_T_Statistic": null,
+        "Net_P_Value": null,
+        "MarketModel_T_Statistic": null,
+        "MarketModel_P_Value": null,
+        "CAPM_T_Statistic": null,
+        "CAPM_P_Value": null
+      }
+    ]
+  },
+  "test_isolation": {
+    "market_parameters_and_train": true,
+    "capm_parameters_and_train": true,
+    "thresholds_and_train_signals": true,
+    "future_pageviews_do_not_change_past_ioc": true
+  },
+  "web": {
+    "all_json_equal_csv_export": true,
+    "snapshot_identical": true,
+    "event_dates_checked": 70,
+    "tooltip_records": [
+      {
+        "Date": "2021-11-03",
+        "Sample": "Train",
+        "IOC": 66.38838324793778,
+        "CAR_Z": 1.567625577873378,
+        "Signal": -1,
+        "Trade_Signal": 0.0,
+        "TSLA_Price": 404.6199951171875,
+        "Entry_Date": "2021-11-04",
+        "Entry_Trade_Signal": -1.0
+      },
+      {
+        "Date": "2021-11-09",
+        "Sample": "Train",
+        "IOC": 71.5676210209983,
+        "CAR_Z": -1.967154687224013,
+        "Signal": 1,
+        "Trade_Signal": 0.0,
+        "TSLA_Price": 341.1666564941406,
+        "Entry_Date": "2021-11-10",
+        "Entry_Trade_Signal": 1.0
+      }
+    ]
+  },
+  "hashes": {
+    "unchanged_files": [
+      "data\\processed\\attention_wave.csv",
+      "data\\processed\\backtest_events.csv",
+      "data\\processed\\behavioral_signals.csv",
+      "data\\processed\\capm_model.csv",
+      "data\\processed\\market_model.csv",
+      "data\\raw\\irx.csv",
+      "data\\raw\\market_data.csv",
+      "data\\raw\\tsla_wikipedia_pageviews.csv",
+      "data\\raw\\history_discovery\\market_max.csv",
+      "data\\raw\\history_discovery\\pageviews_probe.csv",
+      "results\\backtest_summary.csv",
+      "results\\pre_expansion\\results\\backtest_summary.csv",
+      "results\\pre_expansion\\data\\processed\\attention_wave.csv",
+      "results\\pre_expansion\\data\\processed\\backtest_events.csv",
+      "results\\pre_expansion\\data\\processed\\behavioral_signals.csv",
+      "results\\pre_expansion\\data\\processed\\capm_model.csv",
+      "results\\pre_expansion\\data\\processed\\market_model.csv",
+      "results\\pre_expansion\\data\\raw\\market_data.csv",
+      "results\\pre_expansion\\data\\raw\\tsla_wikipedia_pageviews.csv",
+      ".github\\workflows\\static.yml",
+      "src\\abnormal_returns.py",
+      "src\\wikimedia_attention.py",
+      "src\\signals.py",
+      "src\\capm_model.py",
+      "src\\backtest.py"
+    ],
+    "exception": "config.py: END_DATE fija 2026-09-08; no cambia resultados"
+  }
+}

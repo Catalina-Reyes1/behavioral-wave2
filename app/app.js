@@ -48,6 +48,11 @@
       ioc_threshold: number(o.thresholds.IOC_Extreme_Threshold, 2),
       car_positive: number(o.thresholds.CAR_Positive_Threshold, 4), car_negative: number(o.thresholds.CAR_Negative_Threshold, 4),
       entry_cost: percent(o.entry_cost), exit_cost: percent(o.exit_cost), round_cost: percent(o.round_trip_cost),
+      train_events: number(o.signal_counts.Train), test_events: number(o.signal_counts.Test),
+      test_net_precise: `${test.Mean_Net_Return > 0 ? "+" : ""}${number(test.Mean_Net_Return * 100, 3)}%`,
+      net_p_precise: number(test.Net_P_Value, 6),
+      abnormal_mm: percent(test.Mean_Abnormal_MarketModel, true), abnormal_capm: percent(test.Mean_Abnormal_CAPM, true),
+      mm_p: number(test.MarketModel_P_Value, 6), capm_p: number(test.CAPM_P_Value, 6),
     };
     Object.entries(values).forEach(([key, value]) => bind(key, value));
     ["train", "test"].forEach((sample) => document.querySelectorAll(`[data-bind="${sample}_net"]`).forEach((element) => tone(element, results[sample === "train" ? "Train" : "Test"].Mean_Net_Return)));
@@ -69,6 +74,9 @@
     };
     const statRows = [["Retorno neto Test", "Net"], ["Anormal vs Market Model", "MarketModel"], ["Anormal vs CAPM", "CAPM"]];
     for (const [label, key] of statRows) addRow($("#stat-rows"), [label, number(test[`${key}_T_Statistic`], 4), number(test[`${key}_P_Value`], 4)]);
+    const recent = o.robustness;
+    addRow($("#robustness-rows"), ["Principal · " + values.period, number(o.sessions), number(o.signal_count), number(test.Trades), percent(test.Mean_Net_Return, true), number(test.Net_P_Value, 4)]);
+    addRow($("#robustness-rows"), ["Robustez · " + recent.label.replace("Período reciente: ", ""), number(recent.sessions), number(recent.events), number(recent.test.Trades), percent(recent.test.Mean_Net_Return, true), number(recent.test.Net_P_Value, 4)]);
     const pValues = statRows.map(([, key]) => test[`${key}_P_Value`]);
     $("#stat-verdict").textContent = pValues.every((p) => p != null && p >= .05) ? "Ninguno alcanza significancia estadística al 5%." : "Consulta los p-values y las limitaciones de la inferencia estadística.";
     const metrics = [
@@ -97,23 +105,24 @@
     const traces = [
       { type: "scatter", mode: "lines", name: "TSLA · USD", x, y: market.map((row) => row.TSLA_Price), line: { color: "#1d1d1f", width: 1.55 }, connectgaps: false,
         customdata: market.map((row) => [number(row.TSLA_Price, 2), number(attentionByDate.get(row.Date), 2)]),
-        hovertemplate: "TSLA: USD %{customdata[0]}<br>IOC: %{customdata[1]}<extra></extra>" },
+        hovertemplate: "Fecha: %{x|%d/%m/%Y}<br>TSLA: USD %{customdata[0]}<br>IOC del día: %{customdata[1]}<extra></extra>" },
       { type: "scatter", mode: "lines", name: "IOC", x: attention.map((row) => row.Date), y: attention.map((row) => row.IOC), yaxis: "y2", line: { color: "#0071e3", width: 1.2 }, fill: "tozeroy", fillcolor: "rgba(0,113,227,.07)", connectgaps: false,
         customdata: attention.map((row) => [number(row.IOC, 2), prices.has(row.Date) ? `USD ${number(prices.get(row.Date), 2)}` : "Sin sesión de mercado"]),
-        hovertemplate: "IOC: %{customdata[0]}<br>TSLA: %{customdata[1]}<extra></extra>" },
+        hovertemplate: "Fecha: %{x|%d/%m/%Y}<br>IOC del día: %{customdata[0]}<br>TSLA: %{customdata[1]}<extra></extra>" },
     ];
     [1, -1].forEach((sign) => {
       const events = data.events.signals.filter((row) => row.Signal === sign);
       traces.push({ type: "scatter", mode: "markers", name: `Signal ${sign === 1 ? "+1" : "−1"}`, x: events.map((row) => row.Date), y: events.map((row) => prices.get(row.Date)),
         marker: { symbol: sign === 1 ? "triangle-up" : "triangle-down", size: 7, color: sign === 1 ? "#0071e3" : "#6e6e73", line: { color: "white", width: .7 } },
-        customdata: events.map((row) => [number(row.IOC, 2), number(row.CAR_Z, 3), row.Sample]),
-        hovertemplate: `Signal ${sign === 1 ? "+1" : "−1"}<br>IOC: %{customdata[0]}<br>CAR_Z: %{customdata[1]}<br>%{customdata[2]}<extra></extra>` });
+        customdata: events.map((row) => [number(row.IOC, 2), number(row.CAR_Z, 3), row.Sample, number(row.TSLA_Price, 2), date(row.Entry_Date)]),
+        hovertemplate: `<b>Evento: %{x|%d/%m/%Y}</b><br>TSLA: USD %{customdata[3]}<br>IOC del día: %{customdata[0]}<br>Signal ${sign === 1 ? "+1 · Posible reversión alcista" : "−1 · Posible reversión bajista"}<br>CAR_Z: %{customdata[1]}<br>Sample: %{customdata[2]}<br>Entrada t+1: %{customdata[4]}<br>Trade_Signal en la entrada: ${sign === 1 ? "+1" : "−1"}<extra></extra>` });
     });
     const axis = { showgrid: true, gridcolor: "#f0f0f3", zeroline: false, tickfont: { color: "#6e6e73", size: 10 }, fixedrange: true };
     const layout = {
       autosize: true, margin: { l: 48, r: 15, t: 28, b: 37 }, paper_bgcolor: "white", plot_bgcolor: "white", showlegend: false,
       font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif', color: "#1d1d1f", size: 11 },
-      hovermode: "x unified", hoverlabel: { bgcolor: "white", bordercolor: "#dedee5", font: { size: 11 } }, dragmode: "zoom", separators: ",.",
+      // Una etiqueta por punto: nunca reunir eventos de fechas diferentes.
+      hovermode: "closest", hoverdistance: 12, hoverlabel: { bgcolor: "white", bordercolor: "#dedee5", font: { size: 11 } }, dragmode: "zoom", separators: ",.",
       xaxis: { type: "date", anchor: "y2", range: [o.period.start, o.period.end], showgrid: false, tickfont: { color: "#6e6e73", size: 10 }, tickformat: "%Y", hoverformat: "%d/%m/%Y", fixedrange: false },
       yaxis: { ...axis, domain: [.42, 1], title: { text: "TSLA · USD", font: { size: 10, color: "#6e6e73" }, standoff: 8 }, rangemode: "tozero" },
       yaxis2: { ...axis, domain: [0, .28], title: { text: "IOC", font: { size: 10, color: "#0071e3" }, standoff: 8 }, range: [0, 105], tickvals: [0, 50, 100] },
