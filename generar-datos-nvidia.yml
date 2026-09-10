@@ -1,0 +1,42 @@
+# Genera los datos reales de NVIDIA (precios, atencion, backtest) y los publica.
+# Se corre a mano desde la pestaña "Actions" -> este workflow -> "Run workflow".
+name: Generar datos NVIDIA y publicar
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Resolver periodo de historia (fechas) para NVDA
+        run: python -m src.history_period
+
+      - name: Descargar datos y generar el sitio
+        run: python main.py
+
+      - name: Subir datos generados al repositorio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No hay cambios de datos que subir."
+          else
+            git commit -m "Datos de NVIDIA generados automaticamente"
+            git push
+          fi
