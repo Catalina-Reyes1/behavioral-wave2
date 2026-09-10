@@ -1,13 +1,13 @@
 {
-  "tsla_first_price": "2017-03-31",
-  "voo_first_price": "2017-03-31",
-  "first_common_return": "2017-04-03",
-  "attention_first_observation": "2017-02-02",
+  "nvda_first_price": "2015-08-28",
+  "voo_first_price": "2015-08-28",
+  "first_common_return": "2015-08-31",
+  "attention_first_observation": "2015-07-01",
   "attention_last_observation": "2026-09-08",
-  "attention_first_valid_ioc": "2017-04-03",
-  "analysis_start": "2017-04-03",
+  "attention_first_valid_ioc": "2015-08-30",
+  "analysis_start": "2015-08-31",
   "analysis_end": "2026-09-08",
-  "market_download_start": "2017-03-31",
-  "attention_warmup_days": 60,
-  "selection_basis": "Primera sesión con retornos de TSLA/VOO e IOC válido; ninguna métrica de backtest interviene."
+  "market_download_start": "2015-08-28",
+  "attention_warmup_days": 61,
+  "selection_basis": "Primera sesión con retornos de NVDA/VOO e IOC válido; ninguna métrica de backtest interviene."
 }

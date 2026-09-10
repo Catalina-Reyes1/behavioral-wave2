@@ -1,15 +1,15 @@
 {
-  "tsla_first_price": "2010-06-29",
+  "nvda_first_price": "1999-01-22",
   "voo_first_price": "2010-09-09",
   "first_common_return": "2010-09-10",
-  "attention_first_observation": "2017-02-02",
+  "attention_first_observation": "2015-07-01",
   "attention_last_observation": "2026-09-08",
-  "attention_first_valid_ioc": "2017-04-03",
-  "analysis_start": "2017-04-03",
-  "analysis_end": "2026-09-08",
-  "market_download_start": "2017-03-31",
-  "attention_warmup_days": 60,
-  "selection_basis": "Primera sesión con retornos de TSLA/VOO e IOC válido; ninguna métrica de backtest interviene.",
-  "pageviews_query": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Tesla%2C_Inc./daily/2010090900/2026090800",
-  "discovered_at": "2026-09-09T22:19:29.168732+00:00"
+  "attention_first_valid_ioc": "2015-08-30",
+  "analysis_start": "2015-08-31",
+  "analysis_end": "2026-09-04",
+  "market_download_start": "2015-08-28",
+  "attention_warmup_days": 61,
+  "selection_basis": "Primera sesión con retornos de NVDA/VOO e IOC válido; ninguna métrica de backtest interviene.",
+  "pageviews_query": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Nvidia/daily/2010090900/2026090800",
+  "discovered_at": "2026-09-10T03:23:32.374554+00:00"
 }
