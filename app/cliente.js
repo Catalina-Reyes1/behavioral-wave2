@@ -2,10 +2,18 @@
   "use strict";
   const $ = (s) => document.querySelector(s);
   const D = window.BW_CLIENTE;
-  const fmt = (x, d = 2) => Number(x).toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d });
-  const pct = (x, d = 1, sign = false) => (sign && x > 0 ? "+" : "") + fmt(x * 100, d).replace("-", "−") + "%";
+  const fmt = (x, d = 2) => Number(x).toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d }).replace("-", "−");
+  const pct = (x, d = 1, sign = false) => (sign && x > 0 ? "+" : "") + fmt(x * 100, d) + "%";
   const sgn = (x, d = 1) => pct(x, d, true);
   const date = (s) => s.split("-").reverse().join("/");
+  const cls = (x) => (x > 0 ? "positive" : x < 0 ? "negative" : "");
+
+  const SERIES = [
+    ["buy_and_hold", "Comprar y mantener NVDA", "#1d1d1f"],
+    ["ioc", "Estrategia IOC", "#0071e3"],
+    ["solo_compras", "IOC solo compras (+1)", "#17804a"],
+    ["voo", "Referencia: comprar y mantener VOO", "#a1a1a6"],
+  ];
 
   function bind(key, value) { document.querySelectorAll(`[data-v="${key}"]`).forEach((el) => { el.textContent = value; }); }
 
@@ -16,99 +24,82 @@
     nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
   }
 
+  function row(cells) { const tr = document.createElement("tr"); tr.innerHTML = cells.join(""); return tr; }
+
   function fill() {
-    const e = D.events, d = D.daily, t = D.table, y = D.yearly, h = D.holder_exit;
-    const sig = (s, dir) => D.by_signal.find((r) => r.sample === s && r.direction === dir);
+    const e = D.events, a = D.all_days, t = D.table, y = D.yearly, h = D.holder_exit;
+    const sig = (s, k) => D.by_signal.find((r) => r.sample === s && r.key === k);
+    const reg = (s, k) => D.regime_ma50.find((r) => r.sample === s && r.key === k);
     const bh = t.buy_and_hold, ioc = t.ioc, lo = t.solo_compras;
     const period = `${date(D.period.test_start)} al ${date(D.period.test_end)}`;
     const vals = {
-      r2: sgn(e.r2oos, 1), r2_abs: pct(Math.abs(e.r2oos), 1), r2_daily: sgn(d.r2oos, 2), r2_daily2: sgn(d.r2oos, 2),
+      r2: sgn(e.r2oos, 1), r2_abs: pct(Math.abs(e.r2oos), 1), r2_all: sgn(a.r2oos, 2), r2_all2: sgn(a.r2oos, 2),
       ecm_m: fmt(e.ecm_model * 1e4, 1) + " × 10⁻⁴", ecm_b: fmt(e.ecm_bench * 1e4, 1) + " × 10⁻⁴",
-      mda: pct(e.mda, 1), up: pct(e.up_share, 0), up2: pct(e.up_share, 0), hits: e.hits,
-      binom: fmt(e.mda_binom_p, 3), mda_gap: fmt((e.up_share - e.mda) * 100, 1),
-      mda_daily: pct(d.mda, 1), up_daily: pct(d.up_share, 1),
-      ag: fmt(e.ag_stat, 2).replace("-", "−"), agp: fmt(e.ag_p, 3), agp2: fmt(e.ag_p, 3),
+      cw: fmt(e.cw_stat, 2), cwp: fmt(e.cw_p, 3), cwp_all: fmt(a.cw_p, 3), n_all: a.n.toLocaleString("es-CL"),
+      mda: pct(e.mda, 1), mda_f: pct(e.mda_forecast, 0), up: pct(e.up_share, 0), up2: pct(e.up_share, 0), hits: e.hits,
+      binom: fmt(e.mda_binom_p, 3), mda_gap: fmt((e.up_share - e.mda) * 100, 1), win_net: pct(e.win_net, 1),
+      ag: fmt(e.ag_stat, 2), agp: fmt(e.ag_p, 3), agp2: fmt(e.ag_p, 3), overlap: e.overlapping,
       period, period2: period, sessions: D.period.sessions.toLocaleString("es-CL"),
-      n_events: e.n, n_events2: e.n, n_events3: e.n, n_events4: e.n, n_long: e.n_long, n_long2: e.n_long, n_short: e.n_short,
+      n_events: e.n, n_events2: e.n, n_events3: e.n, n_events4: e.n, n_events5: e.n, n_events6: e.n, n_events7: e.n,
+      n_long: e.n_long, n_long2: e.n_long, n_short: e.n_short,
+      rf_src: D.rf_source, rf_mean: pct(D.rf_mean_annual, 2),
       ioc_total: sgn(ioc.total, 1), bh_total: sgn(bh.total, 0), bh_total2: sgn(bh.total, 0), ops: ioc.trades,
       lo_total: sgn(lo.total, 1), lo_dd: pct(lo.max_dd, 1), lo_inv: pct(lo.invested, 1),
-      tr_up: sgn(sig("Train", 1).mean, 1), te_up: sgn(sig("Test", 1).mean, 1), te_up_p: fmt(sig("Test", 1).p, 2),
+      tr_up: sgn(sig("Train", 1).mean, 1), te_up: sgn(sig("Test", 1).mean, 1),
+      tr_up_p: fmt(sig("Train", 1).p, 2), te_up_p: fmt(sig("Test", 1).p, 3),
       tr_dn: sgn(sig("Train", -1).mean, 1), te_dn: sgn(sig("Test", -1).mean, 1),
-      y25: sgn(y.ioc["2025"], 1), y24bh: sgn(y.buy_and_hold["2024"], 0), y24ioc: pct(Math.abs(y.ioc["2024"]), 1),
+      rg_tr_below: sgn(reg("Train", true).mean, 1), rg_te_below: sgn(reg("Test", true).mean, 1),
+      rg_tr_above: sgn(reg("Train", false).mean, 1), rg_te_above: sgn(reg("Test", false).mean, 1),
+      y24bh: sgn(y.buy_and_hold["2024"], 0), y24ioc: sgn(y.ioc["2024"], 1),
       ioc_out: pct(1 - ioc.invested, 0), hx_total: sgn(h.total, 0), hx_dd: pct(h.max_dd, 1),
-      gross: pct(Math.abs(e.gross_mean_test ?? 0), 2), tr_mean: sgn(e.train_net_mean ?? 0, 2), te_mean: sgn(e.test_net_mean ?? 0, 2),
+      gross: sgn(e.mean_gross, 2), net_all: sgn(e.mean_net, 2), breakeven: pct(D.breakeven_long, 1),
+      tr_mean: sgn(D.eval1.Train.mean_t1, 2), te_mean: sgn(D.eval1.Test.mean_t1, 2),
       bh_mult: fmt(1 + bh.total, 1),
+      te_all_p: fmt(D.eval1.Test.p_t1, 2), tr_all_p: fmt(D.eval1.Train.p_t1, 2),
     };
     Object.entries(vals).forEach(([k, v]) => bind(k, v));
 
-    const cls = (x) => (x > 0 ? "positive" : x < 0 ? "negative" : "");
-    const rows = [
+    $("#eval1-rows").append(...["Train", "Test"].map((s) => {
+      const r = D.eval1[s];
+      return row([`<td>${s}</td>`, `<td class="num">${sgn(r.mean, 2)} · ${pct(r.win, 1)} ganadoras</td>`, `<td class="num"><b>${sgn(r.mean_t1, 2)} · ${pct(r.win_t1, 1)} ganadoras</b></td>`]);
+    }));
+
+    const cols = SERIES.filter(([k]) => t[k]);
+    const head = (first) => row([`<th>${first}</th>`, ...cols.map(([, n]) => `<th class="num">${n.replace("Referencia: comprar y mantener", "Ref.: comprar y mantener")}</th>`)]);
+    $("#perf-head").append(head("Métrica"));
+    $("#year-head").append(head("Año"));
+    [
       ["Retorno total", (m) => sgn(m.total, 1), (m) => m.total],
       ["Retorno anualizado", (m) => sgn(m.annual, 1), (m) => m.annual],
       ["Volatilidad anualizada", (m) => pct(m.vol, 1)],
-      ["Sharpe", (m) => fmt(m.sharpe, 2).replace("-", "−"), (m) => m.sharpe],
+      ["Sharpe (en exceso de rf)", (m) => fmt(m.sharpe, 2), (m) => m.sharpe],
       ["Máxima caída", (m) => pct(m.max_dd, 1)],
-      ["Tiempo invertido", (m) => pct(m.invested, 1)],
+      ["Tiempo invertido en la acción", (m) => pct(m.invested, 1)],
       ["Operaciones", (m) => String(m.trades)],
-    ];
-    const body = $("#perf-rows");
-    rows.forEach(([label, f, c]) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${label}</td>` + [bh, ioc, lo].map((m) => `<td class="num ${c ? cls(c(m)) : ""}">${f(m)}</td>`).join("");
-      body.appendChild(tr);
-    });
-    const yb = $("#year-rows");
-    Object.keys(y.buy_and_hold).forEach((yr) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${yr}</td>` + ["buy_and_hold", "ioc", "solo_compras"].map((k) => `<td class="num ${cls(y[k][yr])}">${sgn(y[k][yr], 1)}</td>`).join("");
-      yb.appendChild(tr);
-    });
-    const sb = $("#signal-rows");
-    D.by_signal.forEach((r) => {
-      const tr = document.createElement("tr");
-      if (r.sample === "Test") tr.className = "highlight";
-      tr.innerHTML = `<td><b>${r.direction > 0 ? "+1 · compra" : "−1 · venta"}</b></td><td>${r.sample === "Test" ? "Test (fuera de muestra)" : "Train"}</td><td class="num">${r.n}</td><td class="num">${pct(r.win, 1)}</td><td class="num ${cls(r.mean)}">${sgn(r.mean, 2)}</td><td class="num">${fmt(r.p, 3)}</td>`;
-      sb.appendChild(tr);
-    });
-  }
+    ].forEach(([label, f, c]) => $("#perf-rows").append(row([`<td>${label}</td>`, ...cols.map(([k]) => `<td class="num ${c ? cls(c(t[k])) : ""}">${f(t[k])}</td>`)])));
+    Object.keys(y.buy_and_hold).forEach((yr) => $("#year-rows").append(row([`<td>${yr}</td>`, ...cols.map(([k]) => `<td class="num ${cls(y[k][yr])}">${sgn(y[k][yr], 1)}</td>`)])));
 
-  // Curva de capital con los mismos precios y operaciones del estudio (misma lógica que src/oos_cliente.py).
-  function curves() {
-    const S = window.BEHAVIORAL_WAVE_DATA;
-    const market = S.series.market.filter((r) => r.Date >= D.period.test_start);
-    const dates = market.map((r) => r.Date);
-    const prev = S.series.market[S.series.market.length - market.length - 1].NVDA_Price;
-    const ret = market.map((r, i) => r.NVDA_Price / (i ? market[i - 1].NVDA_Price : prev) - 1);
-    const trades = S.events.trades.filter((t) => t.Sample === "Test").sort((a, b) => a.Date.localeCompare(b.Date));
-    const build = (mode) => {
-      const pos = dates.map(() => (mode === "buy_and_hold" ? 1 : 0)), cost = dates.map(() => 0);
-      let busy = null;
-      if (mode !== "buy_and_hold") trades.forEach((t) => {
-        if (busy && t.Date <= busy) return;
-        if (mode === "solo_compras" && t.Trade_Signal < 0) return;
-        const a = dates.indexOf(t.Date), b = dates.indexOf(t.Exit_Date);
-        for (let i = a; i <= b; i++) pos[i] = t.Trade_Signal;
-        cost[a] += 0.001; cost[b] += 0.001; busy = t.Exit_Date;
-      });
-      let eq = 1;
-      return ret.map((r, i) => (eq *= 1 + pos[i] * r - cost[i]));
-    };
-    return { dates, buy_and_hold: build("buy_and_hold"), ioc: build("ioc"), solo_compras: build("solo_compras") };
+    D.by_signal.forEach((r) => {
+      const tr = row([`<td><b>${r.key > 0 ? "+1 · compra" : "−1 · venta"}</b></td>`, `<td>${r.sample === "Test" ? "Test (fuera de muestra)" : "Train"}</td>`, `<td class="num">${r.n}</td>`, `<td class="num">${pct(r.win, 1)}</td>`, `<td class="num ${cls(r.mean)}">${sgn(r.mean, 2)}</td>`, `<td class="num">${fmt(r.p, 3)}</td>`]);
+      if (r.sample === "Test") tr.className = "highlight";
+      $("#signal-rows").append(tr);
+    });
+    D.regime_ma50.forEach((r) => {
+      const tr = row([`<td><b>${r.key ? "Bajo la media de 50" : "Sobre la media de 50"}</b></td>`, `<td>${r.sample === "Test" ? "Test (fuera de muestra)" : "Train"}</td>`, `<td class="num">${r.n}</td>`, `<td class="num">${r.n_long}</td>`, `<td class="num">${pct(r.win, 1)}</td>`, `<td class="num ${cls(r.mean)}">${sgn(r.mean, 2)}</td>`, `<td class="num">${fmt(r.p, 3)}</td>`]);
+      if (r.sample === "Test") tr.className = "highlight";
+      $("#regime-rows").append(tr);
+    });
+
+    $("#legend").innerHTML = SERIES.filter(([k]) => D.curves[k]).map(([, n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("");
   }
 
   function chart() {
     const el = $("#equity-chart");
-    if (!window.Plotly || !window.BEHAVIORAL_WAVE_DATA) { el.textContent = "No se pudo cargar el gráfico."; return; }
-    const C = curves();
-    window.BW_CURVES = C;
-    const x = C.dates;
-    const line = (name, y, color, width) => ({ type: "scatter", mode: "lines", name, x, y, line: { color, width },
-      hovertemplate: `${name}<br>%{x|%d/%m/%Y}: US$ %{y:,.2f}<extra></extra>` });
-    const traces = [
-      line("Comprar y mantener NVDA", C.buy_and_hold, "#1d1d1f", 1.6),
-      line("Estrategia IOC", C.ioc, "#0071e3", 1.8),
-      line("IOC solo compras", C.solo_compras, "#17804a", 1.8),
-    ];
+    if (!window.Plotly) { el.textContent = "No se pudo cargar el gráfico."; return; }
+    const traces = SERIES.filter(([k]) => D.curves[k]).map(([k, name, color]) => ({
+      type: "scatter", mode: "lines", name, x: D.dates, y: D.curves[k], line: { color, width: k === "voo" ? 1.3 : 1.8, dash: k === "voo" ? "dot" : "solid" },
+      hovertemplate: `${name}<br>%{x|%d/%m/%Y}: US$ %{y:,.2f}<extra></extra>`,
+    }));
     const axis = { showgrid: true, gridcolor: "#f0f0f3", zeroline: false, tickfont: { color: "#6e6e73", size: 10 }, fixedrange: true };
     Plotly.newPlot(el, traces, {
       autosize: true, margin: { l: 52, r: 15, t: 12, b: 36 }, paper_bgcolor: "white", plot_bgcolor: "white", showlegend: false,

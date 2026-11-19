@@ -179,7 +179,7 @@
     nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", close));
     document.addEventListener("keydown", (event) => { if (event.key === "Escape") { close(); menu.focus(); } });
     if ("IntersectionObserver" in window) {
-      const links = [...nav.querySelectorAll("a")];
+      const links = [...nav.querySelectorAll("a")].filter((link) => link.getAttribute("href").startsWith("#"));
       const observer = new IntersectionObserver((entries) => {
         for (const entry of entries) if (entry.isIntersecting) links.forEach((link) => {
           const active = link.getAttribute("href") === `#${entry.target.id}`;
