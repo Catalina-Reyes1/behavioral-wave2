@@ -90,7 +90,7 @@
       </div>
       <div class="verdict-banner">
         <span class="chip no">VEREDICTO</span>
-        <strong>No recomendamos comprar el IOC como estrategia de inversión. La alerta de compra (+1) sí merece seguimiento.</strong>
+        <strong>¿Aprueba? No. No recomendamos comprar el IOC como estrategia de inversión. La alerta de compra (+1) sí merece seguimiento.</strong>
         <p>Fuera de muestra, el indicador pronostica algo mejor que el promedio histórico en los días con señal, pero no acierta la dirección más que decir siempre «sube» y no genera rentabilidad en exceso. Contra comprar y mantener NVIDIA perdió con claridad: <b data-v="ioc_total">—</b> frente a <b data-v="bh_total">—</b>. Lo que se repite en las dos muestras es que las señales de compra después de una caída exagerada funcionan mejor que las de venta.</p>
       </div>
       <div class="hero-footnote">Cifras fuera de muestra, después de costos y sin información futura. No es una recomendación de inversión.</div>
@@ -113,8 +113,9 @@
         <div><b>PERÍODO FUERA DE MUESTRA</b><span><span data-v="period">—</span></span><small><span data-v="sessions">—</span> sesiones · <span data-v="n_events">—</span> señales (<span data-v="n_long">—</span> de compra, <span data-v="n_short">—</span> de venta).</small></div>
         <div><b>VENTANA</b><span>Recursiva (expansiva)</span><small>Parte el 31/08/2015 y suma un dato cada vez. Cada pronóstico se estima solo con eventos ya cerrados.</small></div>
         <div><b>REFERENCIA</b><span>Media histórica recursiva</span><small>El retorno promedio de NVDA a 5 sesiones conocido en cada fecha.</small></div>
-        <div><b>COSTOS Y CAJA</b><span>0,20% por operación</span><small>0,10% al entrar y 0,10% al salir. El dinero sin invertir rinde la tasa libre de riesgo (^IRX).</small></div>
+        <div><b>COSTOS Y CAJA</b><span>0,20% por operación</span><small>0,10% al entrar y 0,10% al salir. El dinero sin invertir rinde la tasa libre de riesgo (letras del Tesoro de EE.UU. a 13 semanas, ^IRX).</small></div>
       </div>
+      <p class="method-note"><b>Train y Test.</b> Train (31/08/2015 a 12/05/2023) son los datos con que se fijaron las reglas y el umbral. Test (15/05/2023 a 08/09/2026) son datos que el modelo nunca vio: todas las cifras de esta hoja salen de ahí, salvo cuando se comparan con Train.</p>
       <div class="note-box">
         <h3>Corregimos el momento de entrada respecto de la Evaluación 1.</h3>
         <p>Las visitas de Wikipedia del día t se cuentan en horario UTC y recién se completan después del cierre de la bolsa. Por eso la señal del día t no se podía operar al cierre de t, como medía la Evaluación 1. Aquí se entra al cierre de t+1: retorno = P(t+6) / P(t+1) − 1. El indicador, el umbral de 65,39 y las señales son exactamente los mismos.</p>
@@ -129,31 +130,31 @@
     </section>
 
     <section id="metricas" class="section soft"><div class="container">
-      <div class="section-heading"><span class="eyebrow">03 / LAS TRES PREGUNTAS DE UN GESTOR</span><h2>Tres pruebas.<br>Una a medias, dos no.</h2><p>Cada métrica responde una pregunta concreta que haría quien está pensando en pagar por la señal.</p></div>
+      <div class="section-heading"><span class="eyebrow">03 / LAS TRES PREGUNTAS DE UN GESTOR</span><h2>Tres pruebas.<br>¿Aprueba? No.</h2><p>Cada métrica responde una pregunta concreta que haría quien está pensando en pagar por la señal.</p></div>
       <div class="metric-grid">
         <article class="metric-card">
           <span class="eyebrow">R² FUERA DE MUESTRA</span>
           <div class="big positive" data-v="r2">—</div>
           <div class="question">¿Pronostica el retorno mejor que el promedio histórico?</div>
           <p>Compara el error del pronóstico del indicador con el error de suponer que NVIDIA rinde «lo de siempre». Si es positivo, el indicador ahorra error. Si es negativo, habría sido mejor no usarlo.</p>
-          <div class="compare">En los <span data-v="n_events2">—</span> días con señal: error cuadrático medio del indicador <b data-v="ecm_m">—</b> frente a <b data-v="ecm_b">—</b> del promedio. Prueba de Clark y West, una cola: t = <b data-v="cw">—</b>, p = <b data-v="cwp">—</b>.<br>En las <span data-v="n_all">—</span> sesiones de Test, con el mismo modelo a 5 sesiones: R² <b data-v="r2_all">—</b>, Clark y West p = <b data-v="cwp_all">—</b>.<br>Ojo: el pronóstico numérico nunca predijo una caída. Su MDA sería <b data-v="mda_f">—</b>, lo mismo que decir siempre «sube». Por eso la dirección se evalúa con la señal.</div>
-          <div class="verdict"><span class="chip wait">A MEDIAS</span><p>Cuando hay señal, el pronóstico reduce el error en <span data-v="r2_abs">—</span> y la mejora es significativa al 5%. Sumando todas las sesiones, la ventaja desaparece. Los días con señal son pocos y se solapan, así que la cifra es frágil.</p></div>
+          <div class="compare">R²oos = 1 − ECM<sub>indicador</sub> / ECM<sub>media histórica</sub>.<br>En los <span data-v="n_events2">—</span> días con señal: error cuadrático medio del indicador <b data-v="ecm_m">—</b> frente a <b data-v="ecm_b">—</b> del promedio. Prueba de Clark y West, una cola: t = <b data-v="cw">—</b>, p = <b data-v="cwp">—</b>.<br>En las <span data-v="n_all">—</span> sesiones de Test, con el mismo modelo a 5 sesiones: R² <b data-v="r2_all">—</b>, Clark y West p = <b data-v="cwp_all">—</b>.<br>Ojo: el pronóstico numérico nunca predijo una caída. Su MDA sería <b data-v="mda_f">—</b>, lo mismo que decir siempre «sube». Por eso la dirección se evalúa con la señal.</div>
+          <div class="verdict"><span class="chip wait">APRUEBA A MEDIAS</span><p>Cuando hay señal, el pronóstico reduce el error en <span data-v="r2_abs">—</span> y la mejora es significativa al 5%. Sumando todas las sesiones, la ventaja desaparece. Los días con señal son pocos y se solapan, así que la cifra es frágil.</p></div>
         </article>
         <article class="metric-card">
           <span class="eyebrow">MDA · ACIERTO DE DIRECCIÓN</span>
           <div class="big" data-v="mda">—</div>
           <div class="question">¿Acierta si NVIDIA sube o baja?</div>
           <p>Acertó <span data-v="hits">—</span> de <span data-v="n_events3">—</span> señales. Supera a una moneda al aire (50%), pero no a una regla más simple: en el <span data-v="up2">—</span> de esas ventanas NVIDIA subió, así que decir siempre «sube» habría acertado más.</p>
-          <div class="compare">Contra 50%: prueba binomial de una cola, p = <b data-v="binom">—</b>.<br>Contra la tendencia del activo: <b data-v="mda_gap">—</b> puntos por debajo.<br>El MDA mide la dirección antes de costos. Después de costos, el <b data-v="win_net">—</b> de las operaciones fue ganadora (es la cifra comparable con la Evaluación 1).</div>
-          <div class="verdict"><span class="chip no">NO SUPERA</span><p>Acertar más que el azar no basta: el indicador acierta menos que apostar siempre a la tendencia de NVIDIA.</p></div>
+          <div class="compare">MDA = aciertos / señales = <span data-v="hits2">—</span> / <span data-v="n_events8">—</span>.<br>Contra 50%: prueba binomial de una cola, p = <b data-v="binom">—</b> (no significativo al 5%).<br>Contra las alzas de NVIDIA en las mismas <span data-v="n_events9">—</span> ventanas (<b data-v="up3">—</b>): <b data-v="mda_gap">—</b> puntos por debajo.<br>Contra las alzas en todas las ventanas de 5 sesiones de Test (<b data-v="up_all">—</b>): <b data-v="mda_gap_all">—</b> puntos por encima.<br>El MDA mide la dirección antes de costos. Después de costos, el <b data-v="win_net">—</b> de las operaciones fue ganadora (es la cifra comparable con la Evaluación 1).</div>
+          <div class="verdict"><span class="chip no">NO APRUEBA</span><p>Supera al 50% y a las alzas generales de Test, pero no de forma significativa, y acierta menos que decir siempre «sube» en esas mismas ventanas, que es la comparación justa.</p></div>
         </article>
         <article class="metric-card">
           <span class="eyebrow">PRUEBA DE ANATOLYEV Y GERKO</span>
           <div class="big" data-v="agp">—</div>
           <div class="question">¿Seguir sus señales deja ganancias por sobre el azar?</div>
           <p>La prueba compara la ganancia de operar según la dirección del indicador con la que se obtendría con las mismas apuestas repartidas al azar. Es la prueba que más se parece a la pregunta del cliente: ¿esto genera plata?</p>
-          <div class="compare">Estadístico EP = <b data-v="ag">—</b> · valor p de una cola = <b data-v="agp2">—</b>.<br>Para rechazar al 5% (una cola) se necesita EP mayor que 1,645.</div>
-          <div class="verdict"><span class="chip no">NO SUPERA</span><p>No se rechaza la hipótesis nula al 5%: no hay evidencia de rentabilidad en exceso.</p></div>
+          <div class="compare">EP = (A − B) / √V: A es la ganancia media de seguir la señal (d × r, con d = +1 o −1), B la que daría la misma proporción de compras y ventas puesta al azar, y V su varianza.<br>Estadístico EP = <b data-v="ag">—</b> · valor p de una cola = <b data-v="agp2">—</b>.<br>Para rechazar al 5% (una cola) se necesita EP mayor que 1,645.</div>
+          <div class="verdict"><span class="chip no">NO APRUEBA</span><p>No se rechaza la hipótesis nula al 5%: no hay evidencia de rentabilidad en exceso.</p></div>
         </article>
       </div>
       <ul class="method-list">
@@ -183,7 +184,7 @@
     </section>
 
     <section id="uso" class="section soft"><div class="container">
-      <div class="section-heading"><span class="eyebrow">05 / RECOMENDACIONES</span><h2>Cuándo usarlo.<br>Cuándo no.</h2><p>Cada recomendación sale de cifras propias, y la comparamos entre Train y Test. Si una regla solo funciona en Test, no la recomendamos.</p></div>
+      <div class="section-heading"><span class="eyebrow">05 / RECOMENDACIONES</span><h2>Cuándo usarlo.<br>Cuándo no.</h2><p>Cada recomendación sale de cifras propias, y la comparamos entre Train (2015–2023) y Test (2023–2026). Si una regla solo funciona en Test, no la recomendamos.</p></div>
       <div class="table-wrap table-scroll" style="margin-top:36px"><table>
         <caption>Las dos caras de la señal: retorno neto por operación de 5 sesiones, después de costos. Valor p bilateral de media cero.</caption>
         <thead><tr><th>Señal</th><th>Muestra</th><th class="num">Operaciones</th><th class="num">Ganadoras</th><th class="num">Retorno neto medio</th><th class="num">Valor p</th></tr></thead>
@@ -229,7 +230,7 @@
     </section>
 
     <section class="conclusion soft"><div class="container">
-      <span class="eyebrow">LA DECISIÓN</span>
+      <span class="eyebrow">LA DECISIÓN · ¿APRUEBA? NO</span>
       <h2>No compraríamos la estrategia.<br><span>Seguiríamos mirando la alerta de compra.</span></h2>
       <p>El IOC mejora el pronóstico solo en los días con señal, no acierta la dirección más que la tendencia de NVIDIA, no genera rentabilidad en exceso y pierde con claridad contra comprar y mantener. Lo reportamos tal cual: no se puede rechazar que el mercado sea eficiente frente a esta señal.</p>
       <p>Lo rescatable es acotado: la señal +1, después de una caída exagerada con atención extrema, rebotó en las dos muestras. Antes de pagar por ella, pediríamos probarla en más acciones y en más años.</p>
