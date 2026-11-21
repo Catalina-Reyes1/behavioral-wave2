@@ -53,4 +53,4 @@ Para reproducir: `pip install -r requirements.txt` y `python -m src.oos_cliente`
 
 ## Nota sobre el README
 
-`README.md` es de la Evaluación 1 y conserva cifras de una versión anterior (período desde 2017). Las cifras vigentes del sitio son las de la página web (período 2015–2026, 2.771 sesiones, 93 eventos) y las de este archivo.
+`README.md` (disponible en el repositorio; no viene en el .zip) es de la Evaluación 1 y conserva cifras de una versión anterior (período desde 2017). Las cifras vigentes del sitio son las de la página web (período 2015–2026, 2.771 sesiones, 93 eventos) y las de este archivo.
